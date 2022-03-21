@@ -62,13 +62,11 @@ namespace HR.Common.Utilities
 
             public void Dispose()
             {
-                if (semaphore is null)
+                if (semaphore != null)
                 {
-                    throw new ObjectDisposedException(objectName: GetType().FullName);
+                    semaphore.Release();
+                    semaphore = null;
                 }
-
-                semaphore.Release();
-                semaphore = null;
             }
         }
     }

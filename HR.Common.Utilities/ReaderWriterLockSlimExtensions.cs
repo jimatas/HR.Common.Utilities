@@ -47,13 +47,11 @@ namespace HR.Common.Utilities
 
             public void Dispose()
             {
-                if (readWriteLock is null)
+                if (readWriteLock != null)
                 {
-                    throw new ObjectDisposedException(objectName: GetType().FullName);
+                    ExitReadOrWriteLock();
+                    readWriteLock = null;
                 }
-
-                ExitReadOrWriteLock();
-                readWriteLock = null;
             }
 
             private void ExitReadOrWriteLock()
