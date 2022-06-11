@@ -16,7 +16,7 @@ namespace HR.Common.Utilities.Tests
             // Arrange
 
             // Act
-            var result = target.IsNullOrDefault();
+            bool result = target.IsNullOrDefault();
 
             // Assert
             Assert.IsTrue(result);
@@ -29,7 +29,7 @@ namespace HR.Common.Utilities.Tests
             int? target = 1;
 
             // Act
-            var result = target.IsNullOrDefault();
+            bool result = target.IsNullOrDefault();
 
             // Assert
             Assert.IsFalse(result);
@@ -43,7 +43,7 @@ namespace HR.Common.Utilities.Tests
                 // Arrange
 
                 // Act
-                var result = target.IsNullOrDefault();
+                bool result = target.IsNullOrDefault();
 
                 // Assert
                 Assert.IsTrue(result);
@@ -57,7 +57,7 @@ namespace HR.Common.Utilities.Tests
             DateTime? target = DateTime.MaxValue;
 
             // Act
-            var result = target.IsNullOrDefault();
+            bool result = target.IsNullOrDefault();
 
             // Assert
             Assert.IsFalse(result);
@@ -72,7 +72,7 @@ namespace HR.Common.Utilities.Tests
             object? target = null;
 
             // Act
-            object result = target.IfNotNull(_ => new object());
+            object? result = target.IfNotNull(_ => new object());
 
             // Assert
             Assert.IsNull(result);
@@ -85,7 +85,7 @@ namespace HR.Common.Utilities.Tests
             object? target = new();
 
             // Act
-            object result = target.IfNotNull(_ => new object());
+            object? result = target.IfNotNull(_ => new object());
 
             // Assert
             Assert.IsNotNull(result);
@@ -96,10 +96,10 @@ namespace HR.Common.Utilities.Tests
         public void IfNotNull_CalledOnNonNullGivenExpressionReturningSelf_ReturnsSelf()
         {
             // Arrange
-            var target = new object();
+            object? target = new();
 
             // Act
-            var result = target.IfNotNull(self => self);
+            object? result = target.IfNotNull(self => self);
 
             // Assert
             Assert.AreEqual(result, target);
@@ -123,7 +123,7 @@ namespace HR.Common.Utilities.Tests
         public void IfNotNull_CalledOnNonNullGivenAction_InvokesAction()
         {
             // Arrange
-            var target = new object();
+            object? target = new();
             bool result = false;
 
             // Act
