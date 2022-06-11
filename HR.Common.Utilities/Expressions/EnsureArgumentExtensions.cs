@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace HR.Common.Utilities
@@ -7,11 +8,13 @@ namespace HR.Common.Utilities
     public static partial class EnsureArgumentExtensions
     {
         #region NotNull
+        [return: NotNull]
         public static T NotNull<T>(this IEnsureArgument ensureArgument, Expression<Func<T>> argument)
         {
             return ensureArgument.NotNull(argument.GetValue(), argument.GetName());
         }
 
+        [return: NotNull]
         public static T NotNull<T>(this IEnsureArgument ensureArgument, Expression<Func<T>> argument, string message)
         {
             return ensureArgument.NotNull(argument.GetValue(), argument.GetName(), message);
@@ -29,11 +32,13 @@ namespace HR.Common.Utilities
             return ensureArgument.NotNullOrEmpty(argument.GetValue(), argument.GetName(), message);
         }
 
+        [return: NotNull]
         public static Guid? NotNullOrEmpty(this IEnsureArgument ensureArgument, Expression<Func<Guid?>> argument)
         {
             return ensureArgument.NotNullOrEmpty(argument.GetValue(), argument.GetName());
         }
 
+        [return: NotNull]
         public static Guid? NotNullOrEmpty(this IEnsureArgument ensureArgument, Expression<Func<Guid?>> argument, string message)
         {
             return ensureArgument.NotNullOrEmpty(argument.GetValue(), argument.GetName(), message);
@@ -47,18 +52,6 @@ namespace HR.Common.Utilities
         public static IEnumerable<T> NotNullOrEmpty<T>(this IEnsureArgument ensureArgument, Expression<Func<IEnumerable<T>>> argument, string message)
         {
             return ensureArgument.NotNullOrEmpty(argument.GetValue(), argument.GetName(), message);
-        }
-
-        public static TCollection NotNullOrEmpty<TCollection, T>(this IEnsureArgument ensureArgument, Expression<Func<TCollection>> argument)
-            where TCollection : IEnumerable<T>
-        {
-            return ensureArgument.NotNullOrEmpty<TCollection, T>(argument.GetValue(), argument.GetName());
-        }
-
-        public static TCollection NotNullOrEmpty<TCollection, T>(this IEnsureArgument ensureArgument, Expression<Func<TCollection>> argument, string message)
-            where TCollection : IEnumerable<T>
-        {
-            return ensureArgument.NotNullOrEmpty<TCollection, T>(argument.GetValue(), argument.GetName(), message);
         }
         #endregion
 
@@ -75,14 +68,14 @@ namespace HR.Common.Utilities
         #endregion
 
         #region NotOutOfRange
-        public static T NotOutOfRange<T>(this IEnsureArgument ensureArgument, Expression<Func<IComparable<T>>> argument, IComparable<T> lowerBound = null, IComparable<T> upperBound = null)
+        public static T NotOutOfRange<T>(this IEnsureArgument ensureArgument, Expression<Func<IComparable<T>>> argument, IComparable<T> minValue = null, IComparable<T> maxValue = null)
         {
-            return ensureArgument.NotOutOfRange(argument.GetValue(), argument.GetName(), lowerBound, upperBound);
+            return ensureArgument.NotOutOfRange(argument.GetValue(), argument.GetName(), minValue, maxValue);
         }
 
-        public static T NotOutOfRange<T>(this IEnsureArgument ensureArgument, Expression<Func<IComparable<T>>> argument, string message, IComparable<T> lowerBound = null, IComparable<T> upperBound = null)
+        public static T NotOutOfRange<T>(this IEnsureArgument ensureArgument, Expression<Func<IComparable<T>>> argument, string message, IComparable<T> minValue = null, IComparable<T> maxValue = null)
         {
-            return ensureArgument.NotOutOfRange(argument.GetValue(), argument.GetName(), message, lowerBound, upperBound);
+            return ensureArgument.NotOutOfRange(argument.GetValue(), argument.GetName(), message, minValue, maxValue);
         }
 
         public static TEnum NotOutOfRange<TEnum>(this IEnsureArgument ensureArgument, Expression<Func<TEnum>> argument)

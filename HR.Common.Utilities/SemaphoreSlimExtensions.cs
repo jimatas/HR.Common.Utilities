@@ -54,20 +54,8 @@ namespace HR.Common.Utilities
         private struct SemaphoreSlimReleaser : IDisposable
         {
             private SemaphoreSlim semaphore;
-
-            public SemaphoreSlimReleaser(SemaphoreSlim semaphore)
-            {
-                this.semaphore = semaphore;
-            }
-
-            public void Dispose()
-            {
-                if (semaphore != null)
-                {
-                    semaphore.Release();
-                    semaphore = null;
-                }
-            }
+            public SemaphoreSlimReleaser(SemaphoreSlim semaphore) => this.semaphore = semaphore;
+            public void Dispose() => Interlocked.Exchange(ref semaphore, null)?.Release();
         }
     }
 }

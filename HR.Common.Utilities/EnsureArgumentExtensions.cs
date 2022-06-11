@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace HR.Common.Utilities
@@ -10,11 +11,13 @@ namespace HR.Common.Utilities
     public static partial class EnsureArgumentExtensions
     {
         #region NotNull
+        [return: NotNull]
         public static T NotNull<T>(this IEnsureArgument ensureArgument, T value, string paramName)
         {
             return ensureArgument.NotNull(value, paramName, message: "Value cannot be null.");
         }
 
+        [return: NotNull]
         public static T NotNull<T>(this IEnsureArgument _, T value, string paramName, string message)
         {
             if (value == null)
@@ -51,6 +54,7 @@ namespace HR.Common.Utilities
             return value;
         }
 
+        [return: NotNull]
         public static Guid? NotNullOrEmpty(this IEnsureArgument ensureArgument, Guid? value, string paramName)
         {
             ensureArgument.NotNull(value, paramName);
@@ -63,6 +67,7 @@ namespace HR.Common.Utilities
             return value;
         }
 
+        [return: NotNull]
         public static Guid? NotNullOrEmpty(this IEnsureArgument ensureArgument, Guid? value, string paramName, string message)
         {
             ensureArgument.NotNull(value, paramName, message);
@@ -77,17 +82,6 @@ namespace HR.Common.Utilities
 
         public static IEnumerable<T> NotNullOrEmpty<T>(this IEnsureArgument ensureArgument, IEnumerable<T> value, string paramName)
         {
-            return ensureArgument.NotNullOrEmpty<IEnumerable<T>, T>(value, paramName);
-        }
-
-        public static IEnumerable<T> NotNullOrEmpty<T>(this IEnsureArgument ensureArgument, IEnumerable<T> value, string paramName, string message)
-        {
-            return ensureArgument.NotNullOrEmpty<IEnumerable<T>, T>(value, paramName, message);
-        }
-
-        public static TCollection NotNullOrEmpty<TCollection, T>(this IEnsureArgument ensureArgument, TCollection value, string paramName)
-            where TCollection : IEnumerable<T>
-        {
             ensureArgument.NotNull(value, paramName);
 
             if (!value.Any())
@@ -98,8 +92,7 @@ namespace HR.Common.Utilities
             return value;
         }
 
-        public static TCollection NotNullOrEmpty<TCollection, T>(this IEnsureArgument ensureArgument, TCollection value, string paramName, string message)
-            where TCollection : IEnumerable<T>
+        public static IEnumerable<T> NotNullOrEmpty<T>(this IEnsureArgument ensureArgument, IEnumerable<T> value, string paramName, string message)
         {
             ensureArgument.NotNull(value, paramName, message);
 
@@ -139,25 +132,25 @@ namespace HR.Common.Utilities
         #endregion
 
         #region NotOutOfRange
-        public static T NotOutOfRange<T>(this IEnsureArgument ensureArgument, IComparable<T> value, string paramName, IComparable<T> lowerBound = null, IComparable<T> upperBound = null)
+        public static T NotOutOfRange<T>(this IEnsureArgument ensureArgument, IComparable<T> value, string paramName, IComparable<T> minValue = null, IComparable<T> maxValue = null)
         {
-            return ensureArgument.NotOutOfRange(value, paramName, DefaultMessage(), lowerBound, upperBound);
+            return ensureArgument.NotOutOfRange(value, paramName, DefaultMessage(), minValue, maxValue);
 
             string DefaultMessage()
             {
                 var message = "Value cannot be";
-                if (lowerBound != null)
+                if (minValue != null)
                 {
-                    message += $" less than {lowerBound}";
+                    message += $" less than {minValue}";
                 }
 
-                if (upperBound != null)
+                if (maxValue != null)
                 {
-                    if (lowerBound != null)
+                    if (minValue != null)
                     {
                         message += " or";
                     }
-                    message += $" greater than {upperBound}";
+                    message += $" greater than {maxValue}";
                 }
                 message += ".";
 
@@ -165,10 +158,10 @@ namespace HR.Common.Utilities
             }
         }
 
-        public static T NotOutOfRange<T>(this IEnsureArgument _, IComparable<T> value, string paramName, string message, IComparable<T> lowerBound = null, IComparable<T> upperBound = null)
+        public static T NotOutOfRange<T>(this IEnsureArgument _, IComparable<T> value, string paramName, string message, IComparable<T> minValue = null, IComparable<T> maxValue = null)
         {
-            if ((lowerBound != null && Comparer<T>.Default.Compare((T)value, (T)lowerBound) < 0) ||
-                (upperBound != null && Comparer<T>.Default.Compare((T)value, (T)upperBound) > 0))
+            if ((minValue != null && Comparer<T>.Default.Compare((T)value, (T)minValue) < 0) ||
+                (maxValue != null && Comparer<T>.Default.Compare((T)value, (T)maxValue) > 0))
             {
                 throw new ArgumentOutOfRangeException(paramName, value, message);
             }

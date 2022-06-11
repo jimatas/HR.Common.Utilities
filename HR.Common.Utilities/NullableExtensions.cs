@@ -11,7 +11,7 @@ namespace HR.Common.Utilities
         /// <param name="value"></param>
         /// <returns></returns>
         public static bool IsNullOrDefault<T>(this T? value) where T : struct
-               => value.GetValueOrDefault().Equals(default(T));
+            => value.GetValueOrDefault().Equals(default(T));
 
         /// <summary>
         /// Provides functionality similar to C# 6.0's null conditional operator.

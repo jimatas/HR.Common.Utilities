@@ -8,68 +8,69 @@ namespace HR.Common.Utilities
     /// <code>
     /// using (rwlock.EnterReadLockAndExit())
     /// {
-    ///   // Do something while read lock is held.
+    ///   // Do something while a read lock is being held.
     /// }
     /// </code>
     /// </summary>
     public static class ReaderWriterLockSlimExtensions
     {
-        public static IDisposable EnterReadLockAndExit(this ReaderWriterLockSlim readWriteLock)
+        public static IDisposable EnterReadLockAndExit(this ReaderWriterLockSlim readerWriterLock)
         {
-            readWriteLock.EnterReadLock();
-            return new ReaderWriterLockSlimExiter(readWriteLock, isReadLock: true, isWriteLock: false);
+            readerWriterLock.EnterReadLock();
+            return new ReaderWriterLockSlimExiter(readerWriterLock, isReadLocked: true, isWriteLocked: false);
         }
 
-        public static IDisposable EnterWriteLockAndExit(this ReaderWriterLockSlim readWriteLock)
+        public static IDisposable EnterWriteLockAndExit(this ReaderWriterLockSlim readerWriterLock)
         {
-            readWriteLock.EnterWriteLock();
-            return new ReaderWriterLockSlimExiter(readWriteLock, isReadLock: false, isWriteLock: true);
+            readerWriterLock.EnterWriteLock();
+            return new ReaderWriterLockSlimExiter(readerWriterLock, isReadLocked: false, isWriteLocked: true);
         }
 
-        public static IDisposable EnterUpgradeableReadLockAndExit(this ReaderWriterLockSlim readWriteLock)
+        public static IDisposable EnterUpgradeableReadLockAndExit(this ReaderWriterLockSlim readerWriterLock)
         {
-            readWriteLock.EnterUpgradeableReadLock();
-            return new ReaderWriterLockSlimExiter(readWriteLock, isReadLock: true, isWriteLock: true);
+            readerWriterLock.EnterUpgradeableReadLock();
+            return new ReaderWriterLockSlimExiter(readerWriterLock, isReadLocked: true, isWriteLocked: true);
         }
 
         private struct ReaderWriterLockSlimExiter : IDisposable
         {
-            private ReaderWriterLockSlim readWriteLock;
-            private readonly bool isReadLock;
-            private readonly bool isWriteLock;
+            private readonly ReaderWriterLockSlim readerWriterLock;
+            private readonly bool isReadLocked;
+            private readonly bool isWriteLocked;
+            private int disposed;
 
-            public ReaderWriterLockSlimExiter(ReaderWriterLockSlim readWriteLock, bool isReadLock, bool isWriteLock)
+            public ReaderWriterLockSlimExiter(ReaderWriterLockSlim readerWriterLock, bool isReadLocked, bool isWriteLocked)
             {
-                this.readWriteLock = readWriteLock;
-                this.isReadLock = isReadLock;
-                this.isWriteLock = isWriteLock;
+                this.readerWriterLock = readerWriterLock;
+                this.isReadLocked = isReadLocked;
+                this.isWriteLocked = isWriteLocked;
+                disposed = 0;
             }
 
             public void Dispose()
             {
-                if (readWriteLock != null)
+                if (Interlocked.Exchange(ref disposed, 1) != 1)
                 {
                     ExitReadOrWriteLock();
-                    readWriteLock = null;
                 }
             }
 
             private void ExitReadOrWriteLock()
             {
-                if (isReadLock)
+                if (isReadLocked)
                 {
-                    if (isWriteLock)
+                    if (isWriteLocked)
                     {
-                        readWriteLock.ExitUpgradeableReadLock();
+                        readerWriterLock.ExitUpgradeableReadLock();
                     }
                     else
                     {
-                        readWriteLock.ExitReadLock();
+                        readerWriterLock.ExitReadLock();
                     }
                 }
-                else if (isWriteLock)
+                else if (isWriteLocked)
                 {
-                    readWriteLock.ExitWriteLock();
+                    readerWriterLock.ExitWriteLock();
                 }
             }
         }

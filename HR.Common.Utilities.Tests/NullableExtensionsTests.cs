@@ -69,10 +69,10 @@ namespace HR.Common.Utilities.Tests
         public void IfNotNull_CalledOnNullGivenExpressionReturningNewObject_ReturnsNull()
         {
             // Arrange
-            object target = null;
+            object? target = null;
 
             // Act
-            var result = target.IfNotNull(_ => new object());
+            object result = target.IfNotNull(_ => new object());
 
             // Assert
             Assert.IsNull(result);
@@ -82,10 +82,10 @@ namespace HR.Common.Utilities.Tests
         public void IfNotNull_CalledOnNonNullGivenExpressionReturningNewObject_ReturnsNewObject()
         {
             // Arrange
-            var target = new object();
+            object? target = new();
 
             // Act
-            var result = target.IfNotNull(_ => new object());
+            object result = target.IfNotNull(_ => new object());
 
             // Assert
             Assert.IsNotNull(result);
@@ -109,7 +109,7 @@ namespace HR.Common.Utilities.Tests
         public void IfNotNull_CalledOnNullGivenAction_DoesNotInvokeAction()
         {
             // Arrange
-            object target = null;
+            object? target = null;
             bool result = false;
 
             // Act

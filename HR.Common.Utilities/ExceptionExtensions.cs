@@ -6,11 +6,11 @@ namespace HR.Common.Utilities
     public static class ExceptionExtensions
     {
         /// <summary>
-        /// Returns a detailed error message for the exception.
+        /// Returns a more detailed error message for the exception.
         /// </summary>
         /// <param name="exception"></param>
-        /// <param name="includeInnerExceptions">Indicates whether to include the details of any inner exceptions.</param>
-        /// <returns>A detailed description of the exception, including stack trace information.</returns>
+        /// <param name="includeInnerExceptions">Indicates whether to include possible inner exception details in the returned error message.</param>
+        /// <returns></returns>
         public static string DetailMessage(this Exception exception, bool includeInnerExceptions = true)
         {
             var detailMessageBuilder = new StringBuilder(exception.BuildDetailMessage());
